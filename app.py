@@ -21,7 +21,7 @@ def add_task():
 def delete_task():
     task_index = request.json.get('task_number')
     current_app.config['task_list'].remove(task_index)
-    return jsonify({"message": "Task {task} successfully added!"})
+    return jsonify({"message": "Task {task} successfully removed!"})
 
 
 if __name__ == '__main__':
