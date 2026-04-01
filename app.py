@@ -14,14 +14,17 @@ def list_task():
 def add_task():
     task = request.json.get('task')
     current_app.config['task_list'].append(task)
-    return jsonify({"message": "Task {task} successfully added!"}), 200
+    return jsonify({"message": f"Task {task} successfully added!"}), 200
 
 
 @app.route('/deleteTask', methods=['POST'])
 def delete_task():
-    task_index = request.json.get('task_number')
-    current_app.config['task_list'].remove(task_index)
-    return jsonify({"message": "Task {task} successfully removed!"}), 200
+    try:
+        task_index = request.json.get('task_number')
+        deleted_task = current_app.config['task_list'].pop(task_index)
+        return jsonify({"message": f"Task {deleted_task} successfully deleted!"}), 200
+    except Exception:
+        return jsonify({"message": f"Task was not found!"}), 404
 
 
 if __name__ == '__main__':
