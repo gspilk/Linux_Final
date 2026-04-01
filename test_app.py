@@ -10,25 +10,25 @@ def client():
         yield client
 
 
-def test_list_task_endpoint(client):
+def test_valid_list_task_endpoint(client):
     response = client.get('/listTasks')
     assert response.status_code == 200
 
 
-def test_add_task_endpoint(client):
+def test_valid_add_task_endpoint(client):
     response = client.post('/addTask', json={'task': 'Test Task'})
     assert response.status_code == 200
     assert response.json == {"message": "Task Test Task successfully added!"}
 
 
-def test_add_task_endpoint(client):
+def test_valid_delete_task_endpoint(client):
     response = client.post('/deleteTask', json={'task_number': 0})
     assert response.status_code == 200
     assert response.json == {
         "message": "Task First Task successfully deleted!"}
 
 
-def test_delete_task_endpoint(client):
+def test_invalid_delete_task_endpoint(client):
     response = client.post('/deleteTask', json={'task_number': 2})
     assert response.status_code == 404
     assert response.json == {
