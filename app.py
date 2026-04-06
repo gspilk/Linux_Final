@@ -1,8 +1,13 @@
-from flask import Flask, current_app, jsonify, request
+from flask import Flask, current_app, jsonify, request, render_template
 
 app = Flask(__name__)
 
 app.config['task_list'] = []
+
+
+@app.route('/')
+def index():
+    return render_template('webpage.html')
 
 
 @app.route('/listTasks', methods=['GET'])
@@ -25,7 +30,8 @@ def delete_task():
         return jsonify({"message": f"Task {deleted_task} successfully deleted!"}), 200
     except Exception:
         return jsonify({"message": f"Task was not found!"}), 404
-    
+
+
 @app.route('/updateTask', methods=['POST'])
 def update_task():
     try:
@@ -35,6 +41,7 @@ def update_task():
         return jsonify({"message": f"Task successfully updated to {new_task}!"}), 200
     except Exception:
         return jsonify({"message": "Task was not found!"}), 404
+
 
 if __name__ == '__main__':
     app.run()
