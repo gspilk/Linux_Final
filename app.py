@@ -25,7 +25,16 @@ def delete_task():
         return jsonify({"message": f"Task {deleted_task} successfully deleted!"}), 200
     except Exception:
         return jsonify({"message": f"Task was not found!"}), 404
-
+    
+@app.route('/updateTask', methods=['POST'])
+def update_task():
+    try:
+        task_index = request.json.get('task_number')
+        new_task = request.json.get('new_task')
+        current_app.config['task_list'][task_index] = new_task
+        return jsonify({"message": f"Task successfully updated to {new_task}!"}), 200
+    except Exception:
+        return jsonify({"message": "Task was not found!"}), 404
 
 if __name__ == '__main__':
     app.run()
