@@ -1,19 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Page Title</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-</style>
+  <title>To-Do List</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    #task-list { list-style: none; padding: 0; }
+    #task-list li { padding: 8px; border-bottom: 1px solid #ddd; }
+    input[type="text"] { padding: 8px; width: 70%; }
+    button { padding: 8px 16px; cursor: pointer; }
+  </style>
 </head>
 <body>
 
 <h1>To-Do List Maker</h1>
-<!-- <p>A website created by me.</p> -->
+
+<input type="text" id="task-input" placeholder="Enter a task..." />
+<button onclick="addTask()">Add Task</button>
+
+<h2>Tasks:</h2>
+<ul id="task-list"></ul>
+
+<script>
+  // Load existing tasks on page load
+  window.onload = loadTasks;
+
+  async function loadTasks() {
+    const res = await fetch('/listTasks');
+    const tasks = await res.json();
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    tasks.forEach(task => {
+      const li = document.createElement('li');
+      li.textContent = task;
+      list.appendChild(li);
+    });
+  }
+
+  async function addTask() {
+    const input = document.getElementById('task-input');
+    const task = input.value.trim();
+
+    if (!task) {
+      alert('Please enter a task!');
+      return;
+    }
+
+    const res = await fetch('/addTask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    input.value = '';   // Clear the input
+    loadTasks();        // Refresh the list
+  }
+</script>
 
 </body>
 </html>
