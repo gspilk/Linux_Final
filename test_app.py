@@ -13,6 +13,7 @@ def client():
 def test_valid_list_task_endpoint(client):
     response = client.get('/listTasks')
     assert response.status_code == 200
+    assert response.json == ["First Task"]
 
 
 def test_valid_add_task_endpoint(client):
@@ -30,6 +31,20 @@ def test_valid_delete_task_endpoint(client):
 
 def test_invalid_delete_task_endpoint(client):
     response = client.post('/deleteTask', json={'task_number': 2})
+    assert response.status_code == 404
+    assert response.json == {
+        "message": "Task was not found!"}
+
+
+def test_valid_update_task_endpoint(client):
+    response = client.post(
+        '/updateTask', json={'task_number': 0, "new_task": "Updated Task"})
+    assert response.status_code == 200
+    assert response.json == {
+        "message": "Task successfully updated to Updated Task!"}
+
+def test_invalid_update_task_endpoint(client):
+    response = client.post('/deleteTask', json={'task_number': 2, "new_task": "Updated Task"})
     assert response.status_code == 404
     assert response.json == {
         "message": "Task was not found!"}
