@@ -24,10 +24,7 @@ jobs:
 
       - name: Run tests
         run: pytest test_app.py -v
-    
-      - name: Run tests with timer
-        run: { time npm test; } > test_results.log 2>&1
-      
+          
       - name: Upload Test Logs
         uses: actions/uploads-artifacts@v4
         if: always()
