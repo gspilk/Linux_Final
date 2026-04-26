@@ -7,15 +7,9 @@
   <style>
     body { font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
     #task-list { list-style: none; padding: 0; }
-    #task-list li { padding: 8px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .task-text { flex: 1; cursor: pointer; }
-    .task-text:hover { color: #4f46e5; text-decoration: underline; }
-    .edit-input { flex: 1; padding: 4px 8px; font-size: 14px; }
+    #task-list li { padding: 8px; border-bottom: 1px solid #ddd; }
     input[type="text"] { padding: 8px; width: 70%; }
     button { padding: 8px 16px; cursor: pointer; }
-    .btn-save   { background: #4f46e5; color: white; border: none; border-radius: 6px; padding: 4px 10px; }
-    .btn-cancel { background: #e5e7eb; border: none; border-radius: 6px; padding: 4px 10px; }
-    .btn-delete { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 4px 10px; }
   </style>
 </head>
 <body>
@@ -29,6 +23,7 @@
 <ul id="task-list"></ul>
 
 <script>
+  // Load existing tasks on page load
   window.onload = loadTasks;
 
   async function loadTasks() {
@@ -36,84 +31,34 @@
     const tasks = await res.json();
     const list = document.getElementById('task-list');
     list.innerHTML = '';
-
-    tasks.forEach((task, index) => {
+    tasks.forEach(task => {
       const li = document.createElement('li');
-      li.dataset.index = index;
-      li.innerHTML = `
-        <span class="task-text" onclick="makeEditable(${index}, '${task.replace(/'/g, "\\'")}')">
-          ${task}
-        </span>
-        <button class="btn-delete" onclick="deleteTask(${index})">Delete</button>
-      `;
+      li.textContent = task;
       list.appendChild(li);
     });
-  }
-
-  function makeEditable(index, currentText) {
-    // Find the <li> for this index and swap it to edit mode
-    const li = document.querySelector(`li[data-index="${index}"]`);
-    li.innerHTML = `
-      <input class="edit-input" type="text" value="${currentText}" id="edit-${index}" />
-      <button class="btn-save"   onclick="saveTask(${index})">Save</button>
-      <button class="btn-cancel" onclick="loadTasks()">Cancel</button>
-      <button class="btn-delete" onclick="deleteTask(${index})">Delete</button>
-    `;
-    // Focus and put cursor at end of text
-    const input = document.getElementById(`edit-${index}`);
-    input.focus();
-    input.setSelectionRange(input.value.length, input.value.length);
-
-    // Allow saving with Enter key
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') saveTask(index);
-      if (e.key === 'Escape') loadTasks();
-    });
-  }
-
-  async function saveTask(index) {
-    const newTask = document.getElementById(`edit-${index}`).value.trim();
-    if (!newTask) { alert('Task cannot be empty!'); return; }
-
-    await fetch('/updateTask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task_number: index, new_task: newTask })
-    });
-
-    loadTasks();
-  }
-
-  async function deleteTask(index) {
-    if (!confirm('Delete this task?')) return;
-
-    await fetch('/deleteTask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task_number: index })
-    });
-
-    loadTasks();
   }
 
   async function addTask() {
     const input = document.getElementById('task-input');
     const task = input.value.trim();
-    if (!task) { alert('Please enter a task!'); return; }
 
-    await fetch('/addTask', {
+    if (!task) {
+      alert('Please enter a task!');
+      return;
+    }
+
+    const res = await fetch('/addTask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ task })
     });
 
-    input.value = '';
-    loadTasks();
-  }
+    const data = await res.json();
+    alert(data.message);
 
-  document.getElementById('task-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addTask();
-  });
+    input.value = '';   // Clear the input
+    loadTasks();        // Refresh the list
+  }
 </script>
 
 </body>
