@@ -39,12 +39,7 @@ def delete_task():
     '''
     This endpoint deletes a task from the current list.
     '''
-    try:
-        task_index = request.json.get('task_number')
-        deleted_task = current_app.config['task_list'].pop(task_index)
-        return jsonify({"message": f"Task {deleted_task} successfully deleted!"}), 200
-    except (IndexError, KeyError):
-        return jsonify({"message": "Task was not found!"}), 404
+    return {"message": "Feature has not been developed yet."}, 200
 
 
 @app.route('/updateTask', methods=['POST'])
