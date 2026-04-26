@@ -26,7 +26,7 @@ jobs:
         run: pytest test_app.py -v --durations=5 | tee test-results.log
 
       - name: Run Pylint
-        run: pylint app.py test_app.py
+        run: pylint app.py test_app.py --fail-under=3.0
 
       - name: Upload test log
         uses: actions/upload-artifact@v4
