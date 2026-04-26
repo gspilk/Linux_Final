@@ -20,6 +20,7 @@ def test_valid_add_task_endpoint(client):
     response = client.post('/addTask', json={'task': 'Test Task'})
     assert response.status_code == 200
     assert response.json == {"message": "Task Test Task successfully added!"}
+    assert app.config['task_list'] == ["First Task", "Test Task"]
 
 
 def test_valid_delete_task_endpoint(client):
@@ -27,6 +28,8 @@ def test_valid_delete_task_endpoint(client):
     assert response.status_code == 200
     assert response.json == {
         "message": "Task First Task successfully deleted!"}
+    response = client.get('/listTasks')
+    assert app.config['task_list'] == []
 
 
 def test_invalid_delete_task_endpoint(client):
@@ -34,6 +37,7 @@ def test_invalid_delete_task_endpoint(client):
     assert response.status_code == 404
     assert response.json == {
         "message": "Task was not found!"}
+    assert app.config['task_list'] == ["First Task"]
 
 
 def test_valid_update_task_endpoint(client):
@@ -42,9 +46,13 @@ def test_valid_update_task_endpoint(client):
     assert response.status_code == 200
     assert response.json == {
         "message": "Task successfully updated to Updated Task!"}
+    assert app.config['task_list'] == ["Updated Task"]
+
 
 def test_invalid_update_task_endpoint(client):
-    response = client.post('/deleteTask', json={'task_number': 2, "new_task": "Updated Task"})
+    response = client.post(
+        '/deleteTask', json={'task_number': 2, "new_task": "Updated Task"})
     assert response.status_code == 404
     assert response.json == {
         "message": "Task was not found!"}
+    assert app.config['task_list'] == ["First Task"]
