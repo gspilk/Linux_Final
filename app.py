@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config['task_list'] = []
 
 
-
 @app.route('/')
 def index():
     '''
