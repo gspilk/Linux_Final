@@ -25,5 +25,9 @@ jobs:
       - name: Run tests
         run: pytest test_app.py -v
 
+      - name: Run tests and Log to File
+        run: pytest test_app.py -v > test-results.log
+        continue-on-error: true
+
       - name: Analysing the code with pylint
         run: pylint $(git ls-files '*.py')
