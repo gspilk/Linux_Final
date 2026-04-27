@@ -1,5 +1,5 @@
 '''
-test_app.py is the module tests the api endpoints in app.py
+test_app.py is the module tests the api endpoints in app.py. 
 '''
 import pytest
 from app import app
