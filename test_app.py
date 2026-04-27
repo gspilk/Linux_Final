@@ -1,5 +1,5 @@
 '''
-test_app.py is the module tests the api endpoints in app.py
+test_app.py is the module tests the api endpoints in app.py. 
 '''
 import pytest
 from app import app
@@ -8,7 +8,7 @@ from app import app
 @pytest.fixture(name="client")
 def fixture_client():
     '''
-    fixture_client is the fixture for client to store the info about app including task_list.
+    fixture_client is the fixture for client to store the info about app including task_list
     '''
     app.config['TESTING'] = True
     app.config['task_list'] = ["First Task"]
